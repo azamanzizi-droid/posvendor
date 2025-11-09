@@ -1,0 +1,5 @@
+{
+  "name": "Sistem POS Vendor",
+  "description": "Aplikasi Point of Sales (POS) yang lengkap untuk perniagaan makanan vendor, membolehkan pengurusan menu, jualan, inventori, dan laporan harian. Semua data disimpan secara setempat di dalam peranti anda.",
+  "requestFramePermissions": []
+}
