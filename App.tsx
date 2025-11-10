@@ -21,8 +21,12 @@ function App() {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
+      // Proactively correct any invalid theme value found in storage.
+      if (theme !== 'light') {
+        setTheme('light');
+      }
     }
-  }, [theme]);
+  }, [theme, setTheme]);
 
   const toggleTheme = () => {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
