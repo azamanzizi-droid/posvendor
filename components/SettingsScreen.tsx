@@ -1,14 +1,18 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Sale } from '../types';
 
 interface SettingsScreenProps {
   sales: Sale[];
   setInventory: React.Dispatch<React.SetStateAction<any[]>>;
   setSales: React.Dispatch<React.SetStateAction<Sale[]>>;
+  theme: string;
+  toggleTheme: () => void;
 }
 
-const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, setSales }) => {
+const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, setSales, theme, toggleTheme }) => {
+  const [isDataExported, setIsDataExported] = useState(false);
+  
   const exportDailySales = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -45,6 +49,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, se
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    alert("Laporan jualan harian telah berjaya dieksport!");
+    setIsDataExported(true);
   };
   
   const resetData = () => {
@@ -54,26 +61,51 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, se
         window.localStorage.removeItem('inventory');
         window.localStorage.removeItem('sales');
         alert("Semua data telah dipadam.");
+        setIsDataExported(false); // Reset export status after data reset
     }
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-slate-800 mb-6">Tetapan</h2>
+      <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-6">Tetapan</h2>
       <div className="space-y-4">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="font-bold text-lg mb-2">Eksport Data</h3>
-          <p className="text-slate-600 text-sm mb-4">Eksport laporan jualan harian anda dalam format CSV.</p>
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
+          <h3 className="font-bold text-lg mb-2 dark:text-slate-100">Tema</h3>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">Pilih antara mod terang atau mod gelap.</p>
+          <div className="flex items-center justify-between">
+            <span className="font-semibold dark:text-slate-200">Mod Gelap</span>
+            <button 
+              onClick={toggleTheme} 
+              className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-slate-800 ${theme === 'dark' ? 'bg-blue-500' : 'bg-slate-300 dark:bg-slate-600'}`}
+              aria-label={`Tukar ke mod ${theme === 'dark' ? 'terang' : 'gelap'}`}
+            >
+              <span className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform ${theme === 'dark' ? 'translate-x-6' : 'translate-x-1'}`}/>
+            </button>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
+          <h3 className="font-bold text-lg mb-2 dark:text-slate-100">Eksport Data</h3>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">Eksport laporan jualan harian anda dalam format CSV. Ini akan mengaktifkan butang Reset Data.</p>
           <button onClick={exportDailySales} className="bg-green-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-green-700 transition">
             Eksport Laporan Jualan Harian
           </button>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow border border-red-200">
-          <h3 className="font-bold text-lg mb-2 text-red-700">Zon Bahaya</h3>
-          <p className="text-slate-600 text-sm mb-4">Padam semua data inventori dan jualan. Tindakan ini tidak boleh diubah.</p>
-          <button onClick={resetData} className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-red-700 transition">
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow border border-red-200 dark:border-red-900/50 transition-colors duration-300">
+          <h3 className="font-bold text-lg mb-2 text-red-700 dark:text-red-500">Zon Bahaya</h3>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">Padam semua data inventori dan jualan. Tindakan ini tidak boleh diubah.</p>
+          <button 
+            onClick={resetData} 
+            disabled={!isDataExported}
+            className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-red-700 transition disabled:bg-red-400 dark:disabled:bg-red-800 disabled:cursor-not-allowed"
+            aria-describedby="reset-description"
+          >
             Reset Semua Data
           </button>
+          {!isDataExported && (
+            <p id="reset-description" className="text-xs text-slate-500 dark:text-slate-400 mt-2">
+              Sila eksport data jualan harian anda terlebih dahulu untuk mengaktifkan butang ini.
+            </p>
+          )}
         </div>
       </div>
     </div>

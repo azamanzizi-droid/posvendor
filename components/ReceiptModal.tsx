@@ -16,10 +16,10 @@ const ReceiptModal: React.FC<ReceiptModalProps> = ({ sale, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
-      <div id="receipt-modal" className="bg-white rounded-lg shadow-xl w-full max-w-sm">
-        <div className="p-4 border-b flex justify-between items-center print:hidden">
-          <h2 className="text-xl font-bold text-slate-700">Resit Jualan</h2>
-          <button onClick={onClose} className="text-slate-500 hover:text-slate-800 text-2xl">&times;</button>
+      <div id="receipt-modal" className="bg-white dark:bg-slate-800 rounded-lg shadow-xl w-full max-w-sm transition-colors duration-300">
+        <div className="p-4 border-b dark:border-slate-700 flex justify-between items-center print:hidden">
+          <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200">Resit Jualan</h2>
+          <button onClick={onClose} className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 text-2xl">&times;</button>
         </div>
         
         <div id="receipt-content" className="p-6 text-sm font-mono text-black bg-white">
@@ -63,9 +63,9 @@ const ReceiptModal: React.FC<ReceiptModalProps> = ({ sale, onClose }) => {
             <p className="mt-2"><span className="font-semibold">Bayaran:</span> {sale.paymentMethod}</p>
         </div>
 
-        <div className="p-4 bg-slate-50 rounded-b-lg flex justify-end gap-3 print:hidden">
-            <button onClick={onClose} className="px-4 py-2 bg-slate-200 text-slate-800 rounded-md hover:bg-slate-300">Tutup</button>
-            <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+        <div className="p-4 bg-slate-50 dark:bg-slate-700 rounded-b-lg flex justify-end gap-3 print:hidden transition-colors duration-300">
+            <button onClick={onClose} className="px-4 py-2 bg-slate-200 text-slate-800 rounded-md hover:bg-slate-300 dark:bg-slate-600 dark:text-slate-200 dark:hover:bg-slate-500 transition-colors duration-150">Tutup</button>
+            <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-150">
                 <PrintIcon /> Cetak
             </button>
         </div>

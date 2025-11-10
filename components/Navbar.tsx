@@ -16,7 +16,7 @@ const NavButton: React.FC<{
   onClick: () => void;
 }> = ({ label, icon, isActive, onClick }) => {
   const activeClasses = 'text-white';
-  const inactiveClasses = 'text-slate-400 hover:text-white';
+  const inactiveClasses = 'text-slate-400 dark:text-slate-500 hover:text-white dark:hover:text-slate-300';
 
   return (
     <button
@@ -32,7 +32,7 @@ const NavButton: React.FC<{
 
 const Navbar: React.FC<NavbarProps> = ({ activePage, setPage }) => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-slate-800 border-t border-slate-700 h-16 z-40">
+    <nav className="fixed bottom-0 left-0 right-0 bg-slate-800 dark:bg-slate-950 border-t border-slate-700 dark:border-slate-800 h-16 z-40 transition-colors duration-300">
       <div className="flex justify-around items-center h-full max-w-lg mx-auto">
         <NavButton
           label="Jualan"

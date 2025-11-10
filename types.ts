@@ -6,6 +6,7 @@ export interface MenuItem {
   costPrice: number;
   sellingPrice: number;
   stock: number;
+  imageUrl?: string;
 }
 
 export interface CartItem extends MenuItem {

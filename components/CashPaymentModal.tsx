@@ -50,13 +50,13 @@ const CashPaymentModal: React.FC<CashPaymentModalProps> = ({ isOpen, onClose, to
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Bayaran Tunai">
       <div className="space-y-4">
-        <div className="p-4 bg-blue-100 rounded-lg text-center">
-          <p className="text-lg text-slate-700">Jumlah Perlu Dibayar</p>
+        <div className="p-4 bg-blue-100 dark:bg-blue-900/50 rounded-lg text-center transition-colors duration-300">
+          <p className="text-lg text-slate-700 dark:text-slate-300">Jumlah Perlu Dibayar</p>
           <p className="text-4xl font-bold text-blue-500">RM{totalAmount.toFixed(2)}</p>
         </div>
         
         <div>
-          <label htmlFor="amount-received" className="block text-sm font-medium text-slate-700 mb-1">
+          <label htmlFor="amount-received" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
             Jumlah Diterima (RM)
           </label>
           <input
@@ -65,7 +65,7 @@ const CashPaymentModal: React.FC<CashPaymentModalProps> = ({ isOpen, onClose, to
             value={amountReceived}
             onChange={(e) => setAmountReceived(e.target.value)}
             placeholder="0.00"
-            className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400"
+            className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 transition-colors duration-300"
             autoFocus
             onKeyDown={(e) => { if (e.key === 'Enter') handleConfirm(); }}
           />
@@ -76,7 +76,7 @@ const CashPaymentModal: React.FC<CashPaymentModalProps> = ({ isOpen, onClose, to
             <button 
               key={value}
               onClick={() => setAmountReceived(String(value))}
-              className="py-2 bg-slate-200 text-slate-700 font-semibold rounded-md hover:bg-slate-300 transition"
+              className="py-2 bg-slate-200 text-slate-700 font-semibold rounded-md hover:bg-slate-300 transition-colors duration-150 dark:bg-slate-600 dark:text-slate-200 dark:hover:bg-slate-500"
             >
               RM{value}
             </button>
@@ -84,21 +84,21 @@ const CashPaymentModal: React.FC<CashPaymentModalProps> = ({ isOpen, onClose, to
         </div>
 
         {change !== null && (
-          <div className="p-4 bg-green-50 rounded-lg text-center">
-            <p className="text-lg text-slate-600">Baki</p>
-            <p className="text-4xl font-bold text-green-600">RM{change.toFixed(2)}</p>
+          <div className="p-4 bg-green-50 dark:bg-green-900/50 rounded-lg text-center transition-colors duration-300">
+            <p className="text-lg text-slate-600 dark:text-slate-400">Baki</p>
+            <p className="text-4xl font-bold text-green-600 dark:text-green-400">RM{change.toFixed(2)}</p>
           </div>
         )}
         
         <div className="flex justify-end gap-3 pt-4">
-          <button type="button" onClick={onClose} className="px-6 py-3 bg-slate-200 text-slate-800 rounded-md hover:bg-slate-300 font-semibold">
+          <button type="button" onClick={onClose} className="px-6 py-3 bg-slate-200 text-slate-800 rounded-md hover:bg-slate-300 font-semibold dark:bg-slate-600 dark:text-slate-200 dark:hover:bg-slate-500 transition-colors duration-150">
             Batal
           </button>
           <button 
             type="button" 
             onClick={handleConfirm}
             disabled={change === null}
-            className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-semibold disabled:bg-slate-400 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-semibold disabled:bg-slate-400 dark:disabled:bg-slate-700 dark:disabled:text-slate-500 disabled:cursor-not-allowed transition-colors duration-150"
           >
             Sahkan Bayaran
           </button>

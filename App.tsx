@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useLocalStorage from './hooks/useLocalStorage';
 import { Page, MenuItem, Sale } from './types';
 import Navbar from './components/Navbar';
@@ -12,6 +12,20 @@ function App() {
   const [page, setPage] = useState<Page>('jualan');
   const [inventory, setInventory] = useLocalStorage<MenuItem[]>('inventory', []);
   const [sales, setSales] = useLocalStorage<Sale[]>('sales', []);
+  const [theme, setTheme] = useLocalStorage<string>('theme', 'light');
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
 
   const addSale = (sale: Sale) => {
     setSales(prevSales => [...prevSales, sale]);
@@ -26,7 +40,7 @@ function App() {
       case 'laporan':
         return <ReportsScreen sales={sales} inventory={inventory} />;
       case 'tetapan':
-        return <SettingsScreen sales={sales} setInventory={setInventory} setSales={setSales} />;
+        return <SettingsScreen sales={sales} setInventory={setInventory} setSales={setSales} theme={theme} toggleTheme={toggleTheme} />;
       default:
         return <SalesScreen inventory={inventory} setInventory={setInventory} addSale={addSale} />;
     }
@@ -43,8 +57,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-200 font-sans">
-        <header className="bg-slate-800 shadow-md sticky top-0 z-30">
+    <div className="min-h-screen bg-slate-200 dark:bg-slate-900 font-sans transition-colors duration-300">
+        <header className="bg-slate-800 dark:bg-slate-950 shadow-md sticky top-0 z-30 transition-colors duration-300">
             <div className="max-w-4xl mx-auto px-4 py-3">
                 <h1 className="text-xl font-bold text-white">{getPageTitle()}</h1>
             </div>
