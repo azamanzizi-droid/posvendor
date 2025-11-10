@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Sale } from '../types';
 import { PrintIcon } from './Icons';
@@ -5,9 +6,10 @@ import { PrintIcon } from './Icons';
 interface ReceiptModalProps {
   sale: Sale | null;
   onClose: () => void;
+  brandName: string;
 }
 
-const ReceiptModal: React.FC<ReceiptModalProps> = ({ sale, onClose }) => {
+const ReceiptModal: React.FC<ReceiptModalProps> = ({ sale, onClose, brandName }) => {
   if (!sale) return null;
 
   const handlePrint = () => {
@@ -24,7 +26,8 @@ const ReceiptModal: React.FC<ReceiptModalProps> = ({ sale, onClose }) => {
         
         <div id="receipt-content" className="p-6 text-sm font-mono text-black bg-white">
             <div className="text-center mb-4">
-                <h3 className="font-bold text-lg">Terima Kasih</h3>
+                <h3 className="font-bold text-lg">{brandName}</h3>
+                <p>Terima Kasih</p>
                 <p className="text-xs">Sila datang lagi</p>
             </div>
             <p><span className="font-semibold">ID:</span> {sale.id}</p>

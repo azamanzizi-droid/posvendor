@@ -13,6 +13,7 @@ function App() {
   const [inventory, setInventory] = useLocalStorage<MenuItem[]>('inventory', []);
   const [sales, setSales] = useLocalStorage<Sale[]>('sales', []);
   const [theme, setTheme] = useLocalStorage<string>('theme', 'light');
+  const [brandName, setBrandName] = useLocalStorage<string>('brandName', 'Kedai Saya');
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -34,15 +35,15 @@ function App() {
   const renderPage = () => {
     switch (page) {
       case 'jualan':
-        return <SalesScreen inventory={inventory} setInventory={setInventory} addSale={addSale} />;
+        return <SalesScreen inventory={inventory} setInventory={setInventory} addSale={addSale} brandName={brandName} />;
       case 'inventori':
         return <InventoryScreen inventory={inventory} setInventory={setInventory} />;
       case 'laporan':
-        return <ReportsScreen sales={sales} inventory={inventory} />;
+        return <ReportsScreen sales={sales} inventory={inventory} brandName={brandName} />;
       case 'tetapan':
-        return <SettingsScreen sales={sales} setInventory={setInventory} setSales={setSales} theme={theme} toggleTheme={toggleTheme} />;
+        return <SettingsScreen sales={sales} setInventory={setInventory} setSales={setSales} theme={theme} toggleTheme={toggleTheme} brandName={brandName} setBrandName={setBrandName} />;
       default:
-        return <SalesScreen inventory={inventory} setInventory={setInventory} addSale={addSale} />;
+        return <SalesScreen inventory={inventory} setInventory={setInventory} addSale={addSale} brandName={brandName} />;
     }
   };
 

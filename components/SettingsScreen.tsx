@@ -8,9 +8,11 @@ interface SettingsScreenProps {
   setSales: React.Dispatch<React.SetStateAction<Sale[]>>;
   theme: string;
   toggleTheme: () => void;
+  brandName: string;
+  setBrandName: (name: string) => void;
 }
 
-const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, setSales, theme, toggleTheme }) => {
+const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, setSales, theme, toggleTheme, brandName, setBrandName }) => {
   const [isDataExported, setIsDataExported] = useState(false);
   
   const exportDailySales = () => {
@@ -69,6 +71,17 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, se
     <div>
       <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-6">Tetapan</h2>
       <div className="space-y-4">
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
+          <h3 className="font-bold text-lg mb-2 dark:text-slate-100">Jenama Perniagaan</h3>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">Masukkan nama perniagaan atau jenama anda. Ia akan dipaparkan di skrin jualan dan resit.</p>
+          <input
+            type="text"
+            value={brandName}
+            onChange={(e) => setBrandName(e.target.value)}
+            placeholder="Contoh: Kopi Padu"
+            className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
+          />
+        </div>
         <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
           <h3 className="font-bold text-lg mb-2 dark:text-slate-100">Tema</h3>
           <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">Pilih antara mod terang atau mod gelap.</p>

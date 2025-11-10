@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { MenuItem, CartItem, Sale } from '../types';
 import { TrashIcon, CashIcon, WalletIcon, FoodPlaceholderIcon, ShareIcon } from './Icons';
@@ -9,9 +10,10 @@ interface SalesScreenProps {
   inventory: MenuItem[];
   setInventory: React.Dispatch<React.SetStateAction<MenuItem[]>>;
   addSale: (sale: Sale) => void;
+  brandName: string;
 }
 
-const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addSale }) => {
+const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addSale, brandName }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [receiptData, setReceiptData] = useState<Sale | null>(null);
   const [isCashModalOpen, setIsCashModalOpen] = useState(false);
@@ -103,6 +105,9 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
     <div className="flex flex-col lg:flex-row h-full gap-4">
       {/* Menu Items */}
       <div className="lg:w-2/3">
+        <div className="mb-4">
+          <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 transition-colors duration-300">{brandName}</h1>
+        </div>
         <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">Pilih Menu</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {inventory.length > 0 ? (
@@ -207,7 +212,7 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
         </div>
       </div>
       
-      {receiptData && <ReceiptModal sale={receiptData} onClose={() => setReceiptData(null)} />}
+      {receiptData && <ReceiptModal sale={receiptData} onClose={() => setReceiptData(null)} brandName={brandName} />}
       
       {isCashModalOpen && (
         <CashPaymentModal

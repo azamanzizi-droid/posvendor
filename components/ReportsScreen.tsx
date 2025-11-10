@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Sale, MenuItem } from '../types';
 import { ChevronDownIcon, ChevronUpIcon, PrintIcon } from './Icons';
@@ -5,6 +6,7 @@ import { ChevronDownIcon, ChevronUpIcon, PrintIcon } from './Icons';
 interface ReportsScreenProps {
   sales: Sale[];
   inventory: MenuItem[];
+  brandName: string;
 }
 
 const StatCard: React.FC<{ title: string; value: string; }> = ({ title, value }) => (
@@ -14,7 +16,7 @@ const StatCard: React.FC<{ title: string; value: string; }> = ({ title, value })
     </div>
 );
 
-const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory }) => {
+const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandName }) => {
   const [activeTab, setActiveTab] = useState('dailySales');
   const [isTransactionsVisible, setIsTransactionsVisible] = useState(false);
 
@@ -287,6 +289,7 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory }) => {
 
             <div id="day-end-report-printable" className="space-y-6 bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
                 <div className="hidden print:block text-center mb-4">
+                    <h1 className="text-3xl font-bold">{brandName}</h1>
                     <h2 className="text-2xl font-bold">Laporan Penutupan Hari</h2>
                     <p>{new Date().toLocaleDateString('ms-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 </div>
