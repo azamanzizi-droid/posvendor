@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { MenuItem, CartItem, Sale } from '../types';
 import { TrashIcon, CashIcon, WalletIcon, FoodPlaceholderIcon, ShareIcon } from './Icons';
@@ -19,20 +18,25 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
   const [isCashModalOpen, setIsCashModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [itemToShare, setItemToShare] = useState<MenuItem | null>(null);
+  const [cartSearchQuery, setCartSearchQuery] = useState('');
+  const [menuSearchQuery, setMenuSearchQuery] = useState('');
 
   const addToCart = (item: MenuItem) => {
-    if (item.stock <= 0) {
-        alert(`${item.name} sudah habis stok.`);
-        return;
-    }
-
     setCart(prevCart => {
       const existingItem = prevCart.find(cartItem => cartItem.id === item.id);
-      if (existingItem) {
-        if(existingItem.quantity >= item.stock) {
-            alert(`Stok untuk ${item.name} tidak mencukupi.`);
-            return prevCart;
+      const currentQuantityInCart = existingItem ? existingItem.quantity : 0;
+      const requestedQuantity = currentQuantityInCart + 1;
+
+      if (requestedQuantity > item.stock) {
+        if (item.stock > 0) {
+            alert(`Stok untuk ${item.name} tidak mencukupi. Baki stok: ${item.stock}.`);
+        } else {
+            alert(`${item.name} sudah habis stok.`);
         }
+        return prevCart;
+      }
+
+      if (existingItem) {
         return prevCart.map(cartItem =>
           cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
         );
@@ -68,6 +72,24 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
 
   const total = useMemo(() => cart.reduce((sum, item) => sum + item.sellingPrice * item.quantity, 0), [cart]);
 
+  const filteredCart = useMemo(() => {
+    if (!cartSearchQuery) {
+        return cart;
+    }
+    return cart.filter(item =>
+        item.name.toLowerCase().includes(cartSearchQuery.toLowerCase())
+    );
+  }, [cart, cartSearchQuery]);
+
+  const filteredInventory = useMemo(() => {
+    if (!menuSearchQuery) {
+        return inventory;
+    }
+    return inventory.filter(item =>
+        item.name.toLowerCase().includes(menuSearchQuery.toLowerCase())
+    );
+  }, [inventory, menuSearchQuery]);
+
   const processCheckout = (paymentMethod: 'Tunai' | 'E-Wallet', amountReceived?: number) => {
     if (cart.length === 0) return;
 
@@ -98,6 +120,7 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
     });
     setInventory(newInventory);
     setCart([]);
+    setCartSearchQuery('');
     setReceiptData(newSale);
   };
 
@@ -109,44 +132,62 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
           <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 transition-colors duration-300">{brandName}</h1>
         </div>
         <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">Pilih Menu</h2>
+        <div className="mb-4">
+            <input
+                type="text"
+                placeholder="Cari menu..."
+                value={menuSearchQuery}
+                onChange={(e) => setMenuSearchQuery(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
+            />
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {inventory.length > 0 ? (
-            inventory.map(item => (
-              <div 
-                key={item.id} 
-                onClick={() => item.stock > 0 && addToCart(item)} 
-                className={`relative bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden transition-all duration-300 ease-in-out ${item.stock > 0 ? 'cursor-pointer hover:scale-105 hover:shadow-lg' : 'opacity-50'}`}
-                aria-disabled={item.stock <= 0}
-                role="button"
-                tabIndex={item.stock > 0 ? 0 : -1}
-                onKeyDown={(e) => { if (e.key === 'Enter' && item.stock > 0) addToCart(item); }}
-              >
-                <div className={`absolute top-2 right-2 px-2 py-0.5 text-xs font-semibold rounded-full z-10 ${item.stock > 0 ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300'}`}>
-                  Stok: {item.stock}
-                </div>
-                <div className="aspect-square bg-slate-50 dark:bg-slate-700 flex items-center justify-center overflow-hidden transition-colors duration-300">
-                    {item.imageUrl ? (
-                        <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
-                    ) : (
-                        <FoodPlaceholderIcon className="w-16 h-16 text-slate-300 dark:text-slate-500" />
-                    )}
-                </div>
-                <div className="p-3">
-                  <p className="text-xs text-slate-600 dark:text-slate-400 truncate">{item.vendor || ' '}&nbsp;</p>
-                  <p className="font-semibold text-slate-800 dark:text-slate-100 truncate">{item.name}</p>
-                  <div className="flex justify-between items-center mt-1">
-                    <p className="text-blue-500 font-bold">RM{item.sellingPrice.toFixed(2)}</p>
-                    <button
-                      onClick={(e) => handleShareClick(item, e)}
-                      className="p-1 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
-                      aria-label={`Kongsi ${item.name}`}
-                    >
-                      <ShareIcon className="w-4 h-4" />
-                    </button>
+            filteredInventory.length > 0 ? (
+                filteredInventory.map(item => (
+                  <div 
+                    key={item.id} 
+                    onClick={() => item.stock > 0 && addToCart(item)} 
+                    className={`relative bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden transition-all duration-300 ease-in-out ${item.stock > 0 ? 'cursor-pointer hover:scale-105 hover:shadow-lg' : 'opacity-50'}`}
+                    aria-disabled={item.stock <= 0}
+                    role="button"
+                    tabIndex={item.stock > 0 ? 0 : -1}
+                    onKeyDown={(e) => { if (e.key === 'Enter' && item.stock > 0) addToCart(item); }}
+                  >
+                    <div className={`absolute top-2 right-2 px-2 py-0.5 text-xs font-semibold rounded-full z-10 ${item.stock > 0 ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300'}`}>
+                      Stok: {item.stock}
+                    </div>
+                    <div className="aspect-square bg-slate-50 dark:bg-slate-700 flex items-center justify-center overflow-hidden transition-colors duration-300">
+                        {item.imageUrl ? (
+                            <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                        ) : (
+                            <FoodPlaceholderIcon className="w-16 h-16 text-slate-300 dark:text-slate-500" />
+                        )}
+                    </div>
+                    <div className="p-3">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 truncate">{item.vendor || ' '}&nbsp;</p>
+                      <p className="font-semibold text-slate-800 dark:text-slate-100 truncate">{item.name}</p>
+                      <div className="flex justify-between items-center mt-1">
+                        <p className="text-blue-500 font-bold">RM{item.sellingPrice.toFixed(2)}</p>
+                        <button
+                          onClick={(e) => handleShareClick(item, e)}
+                          className="p-1 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
+                          aria-label={`Kongsi ${item.name}`}
+                        >
+                          <ShareIcon className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
+                ))
+            ) : (
+                <div className="col-span-full text-center p-8 bg-white dark:bg-slate-800 rounded-lg shadow transition-colors duration-300">
+                    <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">Tiada Menu Ditemui</h3>
+                    <p className="text-slate-600 dark:text-slate-400 mt-2">
+                        Tiada menu yang sepadan dengan carian "{menuSearchQuery}".
+                    </p>
                 </div>
-              </div>
-            ))
+            )
           ) : (
             <div className="col-span-full text-center p-8 bg-white dark:bg-slate-800 rounded-lg shadow transition-colors duration-300">
               <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">Inventori Kosong</h3>
@@ -164,24 +205,57 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
       {/* Cart */}
       <div className="lg:w-1/3 bg-white dark:bg-slate-800 rounded-lg shadow p-4 flex flex-col transition-colors duration-300">
         <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 border-b border-slate-200 dark:border-slate-700 pb-2 mb-4">Pesanan</h2>
+        
+        {cart.length > 0 && (
+            <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Cari dalam pesanan..."
+                    value={cartSearchQuery}
+                    onChange={(e) => setCartSearchQuery(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
+                />
+            </div>
+        )}
+
         <div className="flex-grow overflow-y-auto">
           {cart.length === 0 ? (
             <p className="text-slate-600 dark:text-slate-400 text-center mt-8">Pilih item untuk ditambah.</p>
+          ) : filteredCart.length === 0 ? (
+            <p className="text-slate-600 dark:text-slate-400 text-center mt-8">Tiada item sepadan dengan carian anda.</p>
           ) : (
-            <ul className="space-y-3">
-              {cart.map(item => (
-                <li key={item.id} className="flex items-center justify-between">
-                  <div>
+            <ul className="divide-y divide-slate-200 dark:divide-slate-700">
+              {filteredCart.map(item => (
+                <li key={item.id} className="flex items-center justify-between py-3">
+                  <div className="flex-grow pr-4">
                     <p className="font-semibold text-slate-800 dark:text-slate-100">{item.name}</p>
                     <p className="text-sm text-slate-600 dark:text-slate-400">RM{item.sellingPrice.toFixed(2)}</p>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center border border-slate-300 dark:border-slate-600 rounded-md">
-                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="px-2 py-0.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-l-md">-</button>
-                      <input type="number" value={item.quantity} onChange={(e) => updateQuantity(item.id, parseInt(e.target.value, 10) || 0)} className="w-10 text-center bg-transparent dark:text-slate-200 focus:outline-none" />
-                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="px-2 py-0.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-r-md">+</button>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center rounded-lg bg-slate-100 dark:bg-slate-700 shadow-sm">
+                        <button
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            className="px-3 py-1.5 text-lg font-bold text-slate-500 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-l-lg transition-colors duration-150"
+                            aria-label={`Kurangkan kuantiti untuk ${item.name}`}
+                        >
+                            -
+                        </button>
+                        <input
+                            type="number"
+                            value={item.quantity}
+                            onChange={(e) => updateQuantity(item.id, parseInt(e.target.value, 10) || 0)}
+                            className="w-12 text-center bg-transparent font-semibold dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            aria-label={`Kuantiti untuk ${item.name}`}
+                        />
+                        <button
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="px-3 py-1.5 text-lg font-bold text-slate-500 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-r-lg transition-colors duration-150"
+                            aria-label={`Tambah kuantiti untuk ${item.name}`}
+                        >
+                            +
+                        </button>
                     </div>
-                    <button onClick={() => removeFromCart(item.id)} className="text-red-500 hover:text-red-700">
+                    <button onClick={() => removeFromCart(item.id)} className="text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 transition-colors" aria-label={`Padam ${item.name} dari troli`}>
                       <TrashIcon />
                     </button>
                   </div>

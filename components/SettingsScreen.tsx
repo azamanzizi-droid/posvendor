@@ -14,7 +14,20 @@ interface SettingsScreenProps {
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, setSales, theme, toggleTheme, brandName, setBrandName }) => {
   const [isDataExported, setIsDataExported] = useState(false);
+  const [copyStatus, setCopyStatus] = useState('Salin Pautan');
   
+  const vendorEntryUrl = `${window.location.origin}/vendor-entry`;
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(vendorEntryUrl).then(() => {
+      setCopyStatus('Disalin!');
+      setTimeout(() => setCopyStatus('Salin Pautan'), 2000);
+    }, () => {
+      setCopyStatus('Gagal');
+      setTimeout(() => setCopyStatus('Salin Pautan'), 2000);
+    });
+  };
+
   const exportDailySales = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -62,6 +75,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, se
         setSales([]);
         window.localStorage.removeItem('inventory');
         window.localStorage.removeItem('sales');
+        window.localStorage.removeItem('vendorSubmissions');
         alert("Semua data telah dipadam.");
         setIsDataExported(false); // Reset export status after data reset
     }
@@ -81,6 +95,26 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, se
             placeholder="Contoh: Kopi Padu"
             className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
           />
+        </div>
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
+          <h3 className="font-bold text-lg mb-2 dark:text-slate-100">Pautan Kemasukan Vendor</h3>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
+              Kongsi pautan ini dengan vendor anda untuk membolehkan mereka menyerahkan butiran menu baru. Penyerahan akan muncul di halaman Inventori untuk anda semak dan luluskan.
+          </p>
+          <div className="flex">
+              <input 
+                  type="text" 
+                  readOnly 
+                  value={vendorEntryUrl} 
+                  className="w-full px-3 py-2 border border-r-0 border-slate-300 rounded-l-md bg-slate-50 focus:outline-none dark:bg-slate-900 dark:border-slate-600 dark:text-slate-300 transition-colors duration-300" 
+              />
+              <button 
+                  onClick={handleCopyLink}
+                  className="px-4 py-2 bg-slate-600 text-white font-semibold rounded-r-md hover:bg-slate-700 transition-colors whitespace-nowrap"
+              >
+                  {copyStatus}
+              </button>
+          </div>
         </div>
         <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
           <h3 className="font-bold text-lg mb-2 dark:text-slate-100">Tema</h3>

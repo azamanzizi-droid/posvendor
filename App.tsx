@@ -1,17 +1,26 @@
 
 import React, { useState, useEffect } from 'react';
 import useLocalStorage from './hooks/useLocalStorage';
-import { Page, MenuItem, Sale } from './types';
+import { Page, MenuItem, Sale, VendorSubmission } from './types';
 import Navbar from './components/Navbar';
 import SalesScreen from './components/SalesScreen';
 import InventoryScreen from './components/InventoryScreen';
 import ReportsScreen from './components/ReportsScreen';
 import SettingsScreen from './components/SettingsScreen';
+import VendorEntryScreen from './components/VendorEntryScreen';
+import SubmissionsScreen from './components/SubmissionsScreen';
 
 function App() {
+  const path = window.location.pathname;
+
+  if (path === '/vendor-entry') {
+    return <VendorEntryScreen />;
+  }
+
   const [page, setPage] = useState<Page>('jualan');
   const [inventory, setInventory] = useLocalStorage<MenuItem[]>('inventory', []);
   const [sales, setSales] = useLocalStorage<Sale[]>('sales', []);
+  const [submissions] = useLocalStorage<VendorSubmission[]>('vendorSubmissions', []);
   const [theme, setTheme] = useLocalStorage<string>('theme', 'light');
   const [brandName, setBrandName] = useLocalStorage<string>('brandName', 'Kedai Saya');
 
@@ -42,6 +51,8 @@ function App() {
         return <SalesScreen inventory={inventory} setInventory={setInventory} addSale={addSale} brandName={brandName} />;
       case 'inventori':
         return <InventoryScreen inventory={inventory} setInventory={setInventory} />;
+      case 'penyerahan':
+        return <SubmissionsScreen setInventory={setInventory} />;
       case 'laporan':
         return <ReportsScreen sales={sales} inventory={inventory} brandName={brandName} />;
       case 'tetapan':
@@ -55,6 +66,7 @@ function App() {
     switch (page) {
       case 'jualan': return 'Sistem Jualan';
       case 'inventori': return 'Pengurusan Inventori';
+      case 'penyerahan': return 'Penyerahan Vendor';
       case 'laporan': return 'Laporan';
       case 'tetapan': return 'Tetapan';
       default: return 'Sistem POS';
@@ -71,7 +83,7 @@ function App() {
         <main className="max-w-4xl mx-auto p-4 pb-24">
             {renderPage()}
         </main>
-        <Navbar activePage={page} setPage={setPage} />
+        <Navbar activePage={page} setPage={setPage} submissionCount={submissions.length} />
     </div>
   );
 }

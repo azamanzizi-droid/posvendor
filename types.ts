@@ -24,4 +24,12 @@ export interface Sale {
   change?: number;
 }
 
-export type Page = 'jualan' | 'inventori' | 'laporan' | 'tetapan';
+export type Page = 'jualan' | 'inventori' | 'penyerahan' | 'laporan' | 'tetapan';
+
+export interface VendorSubmission {
+  id: string;
+  name: string;
+  vendor: string;
+  costPrice: number;
+  submittedAt: number;
+}

@@ -2,6 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { Sale, MenuItem } from '../types';
 import { ChevronDownIcon, ChevronUpIcon, PrintIcon } from './Icons';
+import ReceiptModal from './ReceiptModal';
 
 interface ReportsScreenProps {
   sales: Sale[];
@@ -19,6 +20,8 @@ const StatCard: React.FC<{ title: string; value: string; }> = ({ title, value })
 const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandName }) => {
   const [activeTab, setActiveTab] = useState('dailySales');
   const [isTransactionsVisible, setIsTransactionsVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
   const todaySales = useMemo(() => {
     const today = new Date();
@@ -111,6 +114,19 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
     })).sort((a, b) => b.totalCost - a.totalCost);
   }, [todaySales, inventory]);
 
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) {
+        return [];
+    }
+    return sales.filter(sale => {
+        const query = searchQuery.toLowerCase().trim();
+        if (sale.id.toLowerCase().includes(query)) {
+            return true;
+        }
+        return sale.items.some(item => item.name.toLowerCase().includes(query));
+    }).sort((a, b) => b.timestamp - a.timestamp); // Show most recent first
+  }, [sales, searchQuery]);
+
   const TabButton: React.FC<{ tabName: string, label: string }> = ({ tabName, label }) => (
       <button 
         onClick={() => setActiveTab(tabName)} 
@@ -134,6 +150,7 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
           <TabButton tabName="stockBalance" label="Baki Stok" />
           <TabButton tabName="vendorSales" label="Jualan Vendor" />
           <TabButton tabName="dayClosing" label="Penutupan Hari" />
+          <TabButton tabName="receiptSearch" label="Carian Resit" />
       </div>
 
       {activeTab === 'dailySales' && (
@@ -339,6 +356,46 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
         </div>
       )}
 
+      {activeTab === 'receiptSearch' && (
+        <div className="space-y-4">
+          <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Cari Resit Jualan</h3>
+          <input
+            type="text"
+            placeholder="Cari mengikut ID resit atau nama item..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
+          />
+          <div className="space-y-3">
+            {searchQuery.trim() === '' ? (
+              <p className="text-center text-slate-500 dark:text-slate-400 py-8">Sila masukkan ID resit atau nama item untuk memulakan carian.</p>
+            ) : searchResults.length > 0 ? (
+              searchResults.map(sale => (
+                <div key={sale.id} className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow flex justify-between items-center transition-colors duration-300">
+                  <div>
+                    <p className="font-bold text-slate-800 dark:text-slate-100">ID: {sale.id}</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">{new Date(sale.timestamp).toLocaleString('ms-MY')}</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-300 truncate max-w-xs sm:max-w-sm md:max-w-md">{sale.items.map(i => i.name).join(', ')}</p>
+                  </div>
+                  <div className="text-right flex-shrink-0 ml-4">
+                      <p className="font-bold text-blue-500">RM{sale.total.toFixed(2)}</p>
+                      <button 
+                        onClick={() => setSelectedSale(sale)}
+                        className="mt-1 text-sm text-blue-500 hover:underline font-semibold"
+                      >
+                        Lihat Resit
+                      </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-center text-slate-500 dark:text-slate-400 py-8">Tiada resit ditemui untuk "{searchQuery}".</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {selectedSale && <ReceiptModal sale={selectedSale} onClose={() => setSelectedSale(null)} brandName={brandName} />}
     </div>
   );
 };

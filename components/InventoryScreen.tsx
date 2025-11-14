@@ -1,147 +1,41 @@
+
 import React, { useState } from 'react';
 import { MenuItem } from '../types';
 import Modal from './Modal';
 import BulkUploadModal from './BulkUploadModal';
-import { PlusIcon, EditIcon, TrashIcon, CloudUploadIcon, FoodPlaceholderIcon, CameraIcon } from './Icons';
-import CameraModal from './CameraModal';
+import { PlusIcon, EditIcon, TrashIcon, CloudUploadIcon, FoodPlaceholderIcon } from './Icons';
+import { InventoryForm } from './InventoryForm';
 
 interface InventoryScreenProps {
   inventory: MenuItem[];
   setInventory: React.Dispatch<React.SetStateAction<MenuItem[]>>;
 }
 
-const InputField: React.FC<{
-  label: string;
-  type: string;
-  value: string | number;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  step?: string;
-  required?: boolean;
-}> = ({ label, type, value, onChange, step, required = true }) => (
-  <div>
-    <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">{label}</label>
-    <input
-      type={type}
-      value={value}
-      onChange={onChange}
-      step={step}
-      required={required}
-      className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
-    />
-  </div>
-);
-
-const InventoryForm: React.FC<{
-  onSubmit: (item: Omit<MenuItem, 'id'>) => void;
-  initialData?: MenuItem | null;
-  onClose: () => void;
-}> = ({ onSubmit, initialData, onClose }) => {
-  const [name, setName] = useState(initialData?.name || '');
-  const [vendor, setVendor] = useState(initialData?.vendor || '');
-  const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '');
-  const [costPrice, setCostPrice] = useState(initialData ? String(initialData.costPrice) : '');
-  const [sellingPrice, setSellingPrice] = useState(initialData ? String(initialData.sellingPrice) : '');
-  const [stock, setStock] = useState(initialData ? String(initialData.stock) : '');
-  const [isCameraModalOpen, setIsCameraModalOpen] = useState(false);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file) {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-              setImageUrl(reader.result as string);
-          };
-          reader.readAsDataURL(file);
-      }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const finalCostPrice = parseFloat(costPrice) || 0;
-    const finalSellingPrice = parseFloat(sellingPrice) || 0;
-
-    if (finalCostPrice > finalSellingPrice) {
-      alert('Harga jual mesti lebih tinggi daripada harga kos.');
-      return;
-    }
-    onSubmit({
-      name,
-      vendor,
-      imageUrl,
-      costPrice: finalCostPrice,
-      sellingPrice: finalSellingPrice,
-      stock: parseInt(stock, 10) || 0
-    });
-    onClose();
-  };
-
-  return (
-    <>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <InputField label="Nama Menu" type="text" value={name} onChange={e => setName(e.target.value)} />
-        <InputField label="Vendor" type="text" value={vendor} onChange={e => setVendor(e.target.value)} required={false} />
-        
-        <div>
-          <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">Gambar Menu (Pilihan)</label>
-          <div className="mt-1 flex items-center gap-4">
-            <span className="inline-block h-20 w-20 rounded-md overflow-hidden bg-slate-100 dark:bg-slate-700 transition-colors duration-300">
-              {imageUrl ? (
-                <img src={imageUrl} alt="Pratonton" className="h-full w-full object-cover" />
-              ) : (
-                <FoodPlaceholderIcon className="h-full w-full text-slate-300 dark:text-slate-500" />
-              )}
-            </span>
-            <div className="flex flex-col gap-2">
-                <label htmlFor="file-upload" className="cursor-pointer rounded-md bg-white dark:bg-slate-700 px-3 py-2 text-sm font-semibold text-slate-900 dark:text-slate-200 shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors duration-150">
-                    <span>Muat Naik Imej</span>
-                    <input id="file-upload" name="file-upload" type="file" className="sr-only" accept="image/*" onChange={handleImageUpload} />
-                </label>
-                 <button
-                    type="button"
-                    onClick={() => setIsCameraModalOpen(true)}
-                    className="flex items-center justify-center gap-2 rounded-md bg-slate-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 transition-colors duration-150"
-                >
-                    <CameraIcon className="w-4 h-4"/>
-                    <span>Guna Kamera</span>
-                </button>
-                {imageUrl && (
-                    <button
-                        type="button"
-                        onClick={() => setImageUrl('')}
-                        className="rounded-md bg-red-50 dark:bg-red-900/50 px-3 py-2 text-sm font-semibold text-red-600 dark:text-red-400 shadow-sm hover:bg-red-100 dark:hover:bg-red-900 transition-colors duration-150"
-                    >
-                        Padam
-                    </button>
-                )}
-            </div>
-          </div>
-        </div>
-
-        <InputField label="Harga Kos (RM)" type="number" value={costPrice} onChange={e => setCostPrice(e.target.value)} step="0.01" />
-        <InputField label="Harga Jual (RM)" type="number" value={sellingPrice} onChange={e => setSellingPrice(e.target.value)} step="0.01" />
-        <InputField label="Stok Awal" type="number" value={stock} onChange={e => setStock(e.target.value)} />
-        <div className="flex justify-end gap-3 pt-4">
-          <button type="button" onClick={onClose} className="px-4 py-2 bg-slate-200 text-slate-800 rounded-md hover:bg-slate-300 dark:bg-slate-600 dark:text-slate-200 dark:hover:bg-slate-500 transition-colors duration-150">Batal</button>
-          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-150">{initialData ? 'Simpan' : 'Tambah'}</button>
-        </div>
-      </form>
-      <CameraModal
-        isOpen={isCameraModalOpen}
-        onClose={() => setIsCameraModalOpen(false)}
-        onCapture={(imageDataUrl) => {
-            setImageUrl(imageDataUrl);
-            setIsCameraModalOpen(false);
-        }}
-    />
-    </>
-  );
-};
-
-
 const InventoryScreen: React.FC<InventoryScreenProps> = ({ inventory, setInventory }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
+  const [addStockItem, setAddStockItem] = useState<MenuItem | null>(null);
+
+  const handleStockUpdate = (itemId: string, newStock: number) => {
+    const stock = Math.max(0, newStock); // Ensure stock is not negative
+    setInventory(prev =>
+      prev.map(item =>
+        item.id === itemId ? { ...item, stock } : item
+      )
+    );
+  };
+  
+  const handleAddStock = (quantity: number) => {
+    if (!addStockItem) return;
+    const quantityToAdd = Math.max(0, quantity);
+    setInventory(prev =>
+      prev.map(item =>
+        item.id === addStockItem.id ? { ...item, stock: item.stock + quantityToAdd } : item
+      )
+    );
+    setAddStockItem(null); // Close modal
+  };
 
   const handleAddItem = (item: Omit<MenuItem, 'id'>) => {
     const newItem: MenuItem = { ...item, id: `item-${Date.now()}` };
@@ -159,7 +53,6 @@ const InventoryScreen: React.FC<InventoryScreenProps> = ({ inventory, setInvento
 
   const handleEditItem = (updatedItem: MenuItem) => {
     setInventory(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
-    setEditingItem(null);
   }
 
   const handleDeleteItem = (itemId: string) => {
@@ -168,6 +61,20 @@ const InventoryScreen: React.FC<InventoryScreenProps> = ({ inventory, setInvento
     }
   };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingItem(null);
+  };
+
+  const handleFormSubmit = (itemData: Omit<MenuItem, 'id'>) => {
+    if (editingItem) {
+        handleEditItem({ ...itemData, id: editingItem.id });
+    } else {
+        handleAddItem(itemData);
+    }
+    handleCloseModal();
+  };
+  
   const openEditModal = (item: MenuItem) => {
     setEditingItem(item);
     setIsModalOpen(true);
@@ -177,6 +84,15 @@ const InventoryScreen: React.FC<InventoryScreenProps> = ({ inventory, setInvento
     setEditingItem(null);
     setIsModalOpen(true);
   };
+  
+  const openAddStockModal = (item: MenuItem) => {
+    setAddStockItem(item);
+  };
+
+  const getModalTitle = () => {
+      if(editingItem) return 'Edit Menu';
+      return 'Tambah Menu Baru';
+  }
 
   return (
     <div>
@@ -222,11 +138,42 @@ const InventoryScreen: React.FC<InventoryScreenProps> = ({ inventory, setInvento
                   <td className="px-6 py-4 whitespace-nowrap">{item.vendor || '-'}</td>
                   <td className="px-6 py-4">RM{item.costPrice.toFixed(2)}</td>
                   <td className="px-6 py-4">RM{item.sellingPrice.toFixed(2)}</td>
-                  <td className="px-6 py-4">{item.stock}</td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center border border-slate-300 dark:border-slate-600 rounded-md w-28">
+                      <button
+                        onClick={() => handleStockUpdate(item.id, item.stock - 1)}
+                        className="px-3 py-1 text-lg font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-l-md transition-colors"
+                        aria-label={`Kurangkan stok untuk ${item.name}`}
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        value={item.stock}
+                        onChange={(e) => handleStockUpdate(item.id, parseInt(e.target.value, 10) || 0)}
+                        className="w-full text-center bg-transparent dark:text-slate-200 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        aria-label={`Stok semasa untuk ${item.name}`}
+                      />
+                      <button
+                        onClick={() => handleStockUpdate(item.id, item.stock + 1)}
+                        className="px-3 py-1 text-lg font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-r-md transition-colors"
+                        aria-label={`Tambah stok untuk ${item.name}`}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end items-center gap-4">
-                      <button onClick={() => openEditModal(item)} className="text-blue-500 hover:text-blue-700"><EditIcon /></button>
-                      <button onClick={() => handleDeleteItem(item.id)} className="text-red-600 hover:text-red-800"><TrashIcon /></button>
+                      <button onClick={() => openAddStockModal(item)} className="text-green-500 hover:text-green-700" title="Tambah Stok Manual">
+                        <PlusIcon className="w-5 h-5" />
+                      </button>
+                      <button onClick={() => openEditModal(item)} className="text-blue-500 hover:text-blue-700" title="Edit Menu">
+                        <EditIcon />
+                      </button>
+                      <button onClick={() => handleDeleteItem(item.id)} className="text-red-600 hover:text-red-800" title="Padam Menu">
+                        <TrashIcon />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -240,12 +187,51 @@ const InventoryScreen: React.FC<InventoryScreenProps> = ({ inventory, setInvento
         </div>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingItem ? 'Edit Menu' : 'Tambah Menu Baru'}>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={getModalTitle()}>
         <InventoryForm
-          onSubmit={editingItem ? (item) => handleEditItem({ ...item, id: editingItem.id }) : handleAddItem}
+          onSubmit={handleFormSubmit}
           initialData={editingItem}
-          onClose={() => setIsModalOpen(false)}
+          onClose={handleCloseModal}
+          submitButtonText={editingItem ? 'Simpan' : 'Tambah'}
         />
+      </Modal>
+
+      <Modal isOpen={!!addStockItem} onClose={() => setAddStockItem(null)} title={`Tambah Stok untuk ${addStockItem?.name}`}>
+        {addStockItem && (
+            <form onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const quantityInput = form.elements.namedItem('quantity') as HTMLInputElement;
+                const quantity = parseInt(quantityInput.value, 10);
+                if (!isNaN(quantity) && quantity > 0) {
+                    handleAddStock(quantity);
+                }
+            }}>
+                <div className="space-y-4">
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                        Stok semasa: <span className="font-bold">{addStockItem.stock}</span>. Masukkan kuantiti untuk ditambah.
+                    </p>
+                    <div>
+                        <label htmlFor="add-stock-quantity" className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">
+                            Kuantiti Tambahan
+                        </label>
+                        <input
+                            id="add-stock-quantity"
+                            name="quantity"
+                            type="number"
+                            min="1"
+                            required
+                            autoFocus
+                            className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
+                        />
+                    </div>
+                    <div className="flex justify-end gap-3 pt-4">
+                        <button type="button" onClick={() => setAddStockItem(null)} className="px-4 py-2 bg-slate-200 text-slate-800 rounded-md hover:bg-slate-300 dark:bg-slate-600 dark:text-slate-200 dark:hover:bg-slate-500 transition-colors duration-150">Batal</button>
+                        <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-150">Tambah Stok</button>
+                    </div>
+                </div>
+            </form>
+        )}
       </Modal>
 
       <BulkUploadModal
@@ -253,6 +239,7 @@ const InventoryScreen: React.FC<InventoryScreenProps> = ({ inventory, setInvento
         onClose={() => setIsUploadModalOpen(false)}
         onConfirm={handleBulkAdd}
       />
+      
     </div>
   );
 };
