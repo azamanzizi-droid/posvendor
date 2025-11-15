@@ -12,7 +12,7 @@ function App() {
   const [inventory, setInventory] = useLocalStorage<MenuItem[]>('inventory', []);
   const [sales, setSales] = useLocalStorage<Sale[]>('sales', []);
   const [theme, setTheme] = useLocalStorage<string>('theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  const [colorTheme, setColorTheme] = useLocalStorage<string>('colorTheme', 'blue');
+  const [colorTheme, setColorTheme] = useLocalStorage<string>('colorTheme', 'green');
   const [brandName, setBrandName] = useLocalStorage<string>('brandName', 'Kedai Saya');
 
   useEffect(() => {
