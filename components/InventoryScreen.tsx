@@ -136,7 +136,7 @@ const InventoryScreen: React.FC<InventoryScreenProps> = ({ inventory, setInvento
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Senarai Inventori</h2>
         <div className="flex items-center gap-2 flex-wrap justify-end w-full sm:w-auto">
-            <button onClick={() => setIsImportModalOpen(true)} className="flex items-center gap-2 bg-purple-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition">
+            <button onClick={() => setIsImportModalOpen(true)} className="flex items-center gap-2 bg-slate-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-slate-700 transition">
               <CloudUploadIcon className="w-5 h-5" /> Import
             </button>
             <button onClick={handleExportInventory} className="flex items-center gap-2 bg-green-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-green-700 transition">
@@ -145,7 +145,7 @@ const InventoryScreen: React.FC<InventoryScreenProps> = ({ inventory, setInvento
             <button onClick={() => setIsUploadModalOpen(true)} className="flex items-center gap-2 bg-slate-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-slate-700 transition">
               <CloudUploadIcon className="w-5 h-5" /> Muat Naik Pukal
             </button>
-            <button onClick={openAddModal} className="flex items-center gap-2 bg-blue-500 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">
+            <button onClick={openAddModal} className="flex items-center gap-2 theme-bg-primary text-white font-semibold px-4 py-2 rounded-lg shadow theme-bg-primary-hover transition">
               <PlusIcon className="w-5 h-5" /> Tambah Menu
             </button>
         </div>
@@ -265,7 +265,7 @@ const InventoryScreen: React.FC<InventoryScreenProps> = ({ inventory, setInvento
                             min="1"
                             required
                             autoFocus
-                            className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
+                            className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus\:theme-border-primary focus:ring-2 focus\:theme-ring-primary dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
                         />
                     </div>
                     <div className="flex justify-end gap-3 pt-4">

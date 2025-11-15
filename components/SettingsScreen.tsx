@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Sale } from '../types';
 
@@ -10,24 +9,23 @@ interface SettingsScreenProps {
   toggleTheme: () => void;
   brandName: string;
   setBrandName: (name: string) => void;
+  colorTheme: string;
+  setColorTheme: (theme: string) => void;
 }
 
-const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, setSales, theme, toggleTheme, brandName, setBrandName }) => {
+const colorThemes = [
+    { name: 'blue', color: '#3b82f6' },
+    { name: 'green', color: '#22c55e' },
+    { name: 'red', color: '#ef4444' },
+    { name: 'purple', color: '#a855f7' },
+    { name: 'teal', color: '#14b8a6' },
+    { name: 'orange', color: '#f97316' },
+    { name: 'indigo', color: '#6366f1' },
+];
+
+const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, setSales, theme, toggleTheme, brandName, setBrandName, colorTheme, setColorTheme }) => {
   const [isDataExported, setIsDataExported] = useState(false);
-  const [copyStatus, setCopyStatus] = useState('Salin Pautan');
   
-  const vendorEntryUrl = `${window.location.origin}/vendor-entry`;
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(vendorEntryUrl).then(() => {
-      setCopyStatus('Disalin!');
-      setTimeout(() => setCopyStatus('Salin Pautan'), 2000);
-    }, () => {
-      setCopyStatus('Gagal');
-      setTimeout(() => setCopyStatus('Salin Pautan'), 2000);
-    });
-  };
-
   const exportDailySales = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -75,7 +73,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, se
         setSales([]);
         window.localStorage.removeItem('inventory');
         window.localStorage.removeItem('sales');
-        window.localStorage.removeItem('vendorSubmissions');
         alert("Semua data telah dipadam.");
         setIsDataExported(false); // Reset export status after data reset
     }
@@ -93,28 +90,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, se
             value={brandName}
             onChange={(e) => setBrandName(e.target.value)}
             placeholder="Contoh: Kopi Padu"
-            className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
+            className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus\:theme-border-primary focus:ring-2 focus\:theme-ring-primary dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
           />
-        </div>
-        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
-          <h3 className="font-bold text-lg mb-2 dark:text-slate-100">Pautan Kemasukan Vendor</h3>
-          <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
-              Kongsi pautan ini dengan vendor anda untuk membolehkan mereka menyerahkan butiran menu baru. Penyerahan akan muncul di halaman Inventori untuk anda semak dan luluskan.
-          </p>
-          <div className="flex">
-              <input 
-                  type="text" 
-                  readOnly 
-                  value={vendorEntryUrl} 
-                  className="w-full px-3 py-2 border border-r-0 border-slate-300 rounded-l-md bg-slate-50 focus:outline-none dark:bg-slate-900 dark:border-slate-600 dark:text-slate-300 transition-colors duration-300" 
-              />
-              <button 
-                  onClick={handleCopyLink}
-                  className="px-4 py-2 bg-slate-600 text-white font-semibold rounded-r-md hover:bg-slate-700 transition-colors whitespace-nowrap"
-              >
-                  {copyStatus}
-              </button>
-          </div>
         </div>
         <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
           <h3 className="font-bold text-lg mb-2 dark:text-slate-100">Tema</h3>
@@ -123,12 +100,27 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ sales, setInventory, se
             <span className="font-semibold dark:text-slate-200">Mod Gelap</span>
             <button 
               onClick={toggleTheme} 
-              className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-slate-800 ${theme === 'dark' ? 'bg-blue-500' : 'bg-slate-300 dark:bg-slate-600'}`}
+              className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus\:theme-ring-primary dark:focus:ring-offset-slate-800 ${theme === 'dark' ? 'theme-bg-primary' : 'bg-slate-300 dark:bg-slate-600'}`}
               aria-label={`Tukar ke mod ${theme === 'dark' ? 'terang' : 'gelap'}`}
             >
               <span className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform ${theme === 'dark' ? 'translate-x-6' : 'translate-x-1'}`}/>
             </button>
           </div>
+        </div>
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
+            <h3 className="font-bold text-lg mb-2 dark:text-slate-100">Tema Warna</h3>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">Pilih warna utama untuk aplikasi.</p>
+            <div className="flex flex-wrap gap-4">
+                {colorThemes.map((t) => (
+                    <button
+                        key={t.name}
+                        onClick={() => setColorTheme(t.name)}
+                        className={`w-10 h-10 rounded-full focus:outline-none transition-all duration-200 ring-offset-2 dark:ring-offset-slate-800 ${colorTheme === t.name ? 'ring-2 ring-slate-900 dark:ring-slate-200' : 'ring-0 hover:scale-110'}`}
+                        style={{ backgroundColor: t.color }}
+                        aria-label={`Pilih tema ${t.name}`}
+                    />
+                ))}
+            </div>
         </div>
         <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
           <h3 className="font-bold text-lg mb-2 dark:text-slate-100">Eksport Data</h3>

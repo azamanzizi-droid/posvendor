@@ -40,7 +40,7 @@ const VendorSubmissionsModal: React.FC<VendorSubmissionsModalProps> = ({ isOpen,
                   </button>
                   <button
                     onClick={() => onProcess(sub)}
-                    className="px-3 py-1.5 bg-blue-500 text-white text-sm font-semibold rounded-md hover:bg-blue-600 transition"
+                    className="px-3 py-1.5 theme-bg-primary text-white text-sm font-semibold rounded-md theme-bg-primary-hover transition"
                   >
                     Semak
                   </button>

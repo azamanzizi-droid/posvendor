@@ -50,9 +50,9 @@ const CashPaymentModal: React.FC<CashPaymentModalProps> = ({ isOpen, onClose, to
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Bayaran Tunai">
       <div className="space-y-4">
-        <div className="p-4 bg-blue-100 dark:bg-blue-900/50 rounded-lg text-center transition-colors duration-300">
+        <div className="p-4 theme-bg-subtle rounded-lg text-center transition-colors duration-300">
           <p className="text-lg text-slate-700 dark:text-slate-300">Jumlah Perlu Dibayar</p>
-          <p className="text-4xl font-bold text-blue-500">RM{totalAmount.toFixed(2)}</p>
+          <p className="text-4xl font-bold theme-text-primary">RM{totalAmount.toFixed(2)}</p>
         </div>
         
         <div>
@@ -65,7 +65,7 @@ const CashPaymentModal: React.FC<CashPaymentModalProps> = ({ isOpen, onClose, to
             value={amountReceived}
             onChange={(e) => setAmountReceived(e.target.value)}
             placeholder="0.00"
-            className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 transition-colors duration-300"
+            className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus\:theme-border-primary dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 transition-colors duration-300"
             autoFocus
             onKeyDown={(e) => { if (e.key === 'Enter') handleConfirm(); }}
           />
@@ -98,7 +98,7 @@ const CashPaymentModal: React.FC<CashPaymentModalProps> = ({ isOpen, onClose, to
             type="button" 
             onClick={handleConfirm}
             disabled={change === null}
-            className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-semibold disabled:bg-slate-400 dark:disabled:bg-slate-700 dark:disabled:text-slate-500 disabled:cursor-not-allowed transition-colors duration-150"
+            className="px-6 py-3 theme-bg-primary text-white rounded-md theme-bg-primary-hover font-semibold disabled:bg-slate-400 dark:disabled:bg-slate-700 dark:disabled:text-slate-500 disabled:cursor-not-allowed transition-colors duration-150"
           >
             Sahkan Bayaran
           </button>

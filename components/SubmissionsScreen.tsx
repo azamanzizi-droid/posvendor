@@ -57,7 +57,7 @@ const SubmissionsScreen: React.FC<SubmissionsScreenProps> = ({ setInventory }) =
                     Oleh: <span className="font-semibold">{sub.vendor}</span>
                   </p>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Harga Kos: <span className="font-semibold text-blue-500">RM{sub.costPrice.toFixed(2)}</span>
+                    Harga Kos: <span className="font-semibold theme-text-primary">RM{sub.costPrice.toFixed(2)}</span>
                   </p>
                   <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
                     Dihantar pada: {new Date(sub.submittedAt).toLocaleString('ms-MY')}
@@ -73,7 +73,7 @@ const SubmissionsScreen: React.FC<SubmissionsScreenProps> = ({ setInventory }) =
                   </button>
                   <button
                     onClick={() => handleProcessClick(sub)}
-                    className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-md hover:bg-blue-600 transition"
+                    className="px-4 py-2 theme-bg-primary text-white text-sm font-semibold rounded-md theme-bg-primary-hover transition"
                   >
                     Proses
                   </button>

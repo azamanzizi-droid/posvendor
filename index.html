@@ -17,11 +17,14 @@
 </script>
 <script>
   // Apply theme from local storage to prevent FOUC
-  if (localStorage.getItem('theme') === 'dark') {
+  if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
     document.documentElement.classList.add('dark');
   } else {
     document.documentElement.classList.remove('dark');
   }
+  // Apply color theme from local storage to prevent FOUC
+  const colorTheme = localStorage.getItem('colorTheme');
+  document.documentElement.setAttribute('data-theme-color', colorTheme ? JSON.parse(colorTheme) : 'blue');
 </script>
 <style>
   @media print {
@@ -53,6 +56,91 @@
   .dark ::-webkit-scrollbar-thumb:hover {
     background: #64748b; /* slate-500 */
   }
+
+  /* Color Theme Styles */
+  :root {
+    --theme-color-100: #dbeafe;
+    --theme-color-400: #60a5fa;
+    --theme-color-500: #3b82f6;
+    --theme-color-600: #2563eb;
+    --theme-color-900-rgb: 30, 58, 138;
+  }
+  
+  [data-theme-color="green"] {
+    --theme-color-100: #dcfce7;
+    --theme-color-400: #4ade80;
+    --theme-color-500: #22c55e;
+    --theme-color-600: #16a34a;
+    --theme-color-900-rgb: 20, 83, 45;
+  }
+  [data-theme-color="red"] {
+    --theme-color-100: #fee2e2;
+    --theme-color-400: #f87171;
+    --theme-color-500: #ef4444;
+    --theme-color-600: #dc2626;
+    --theme-color-900-rgb: 127, 29, 29;
+  }
+  [data-theme-color="purple"] {
+    --theme-color-100: #f3e8ff;
+    --theme-color-400: #c084fc;
+    --theme-color-500: #a855f7;
+    --theme-color-600: #9333ea;
+    --theme-color-900-rgb: 88, 28, 135;
+  }
+  [data-theme-color="teal"] {
+    --theme-color-100: #ccfbf1;
+    --theme-color-400: #2dd4bf;
+    --theme-color-500: #14b8a6;
+    --theme-color-600: #0d9488;
+    --theme-color-900-rgb: 19, 78, 74;
+  }
+  [data-theme-color="orange"] {
+    --theme-color-100: #ffedd5;
+    --theme-color-400: #fb923c;
+    --theme-color-500: #f97316;
+    --theme-color-600: #ea580c;
+    --theme-color-900-rgb: 124, 45, 18;
+  }
+  [data-theme-color="indigo"] {
+    --theme-color-100: #e0e7ff;
+    --theme-color-400: #818cf8;
+    --theme-color-500: #6366f1;
+    --theme-color-600: #4f46e5;
+    --theme-color-900-rgb: 49, 46, 129;
+  }
+  
+  .theme-text-primary { color: var(--theme-color-500); }
+  .theme-border-primary { border-color: var(--theme-color-500); }
+  .theme-bg-primary { background-color: var(--theme-color-500); }
+  .theme-bg-primary-hover:hover { background-color: var(--theme-color-600); }
+  .focus\:theme-border-primary:focus { border-color: var(--theme-color-400); }
+  .focus\:theme-ring-primary:focus {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    --tw-ring-color: var(--theme-color-500);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  }
+
+  .theme-bg-subtle { background-color: var(--theme-color-100); }
+  .dark .theme-bg-subtle { background-color: rgba(var(--theme-color-900-rgb), 0.5); }
+  
+  .theme-file-input::file {
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    border-width: 0px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--theme-color-600);
+    background-color: var(--theme-color-100);
+    transition-property: background-color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+  .theme-file-input:hover::file {
+    background-color: rgba(var(--theme-color-900-rgb), 0.1);
+  }
+
 </style>
 </head>
   <body class="bg-slate-200 dark:bg-slate-900 transition-colors duration-300">

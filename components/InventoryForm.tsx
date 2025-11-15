@@ -19,7 +19,7 @@ const InputField: React.FC<{
       onChange={onChange}
       step={step}
       required={required}
-      className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
+      className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus\:theme-border-primary dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
     />
   </div>
 );
@@ -116,7 +116,7 @@ export const InventoryForm: React.FC<{
         <InputField label="Stok Awal" type="number" value={stock} onChange={e => setStock(e.target.value)} />
         <div className="flex justify-end gap-3 pt-4">
           <button type="button" onClick={onClose} className="px-4 py-2 bg-slate-200 text-slate-800 rounded-md hover:bg-slate-300 dark:bg-slate-600 dark:text-slate-200 dark:hover:bg-slate-500 transition-colors duration-150">Batal</button>
-          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-150">{submitButtonText}</button>
+          <button type="submit" className="px-4 py-2 theme-bg-primary text-white rounded-md theme-bg-primary-hover transition-colors duration-150">{submitButtonText}</button>
         </div>
       </form>
       <CameraModal

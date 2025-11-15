@@ -38,7 +38,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, item }) => {
           </div>
           <div>
             <p className="font-bold text-lg text-slate-800 dark:text-slate-100">{item.name}</p>
-            <p className="text-blue-500 font-semibold">RM{item.sellingPrice.toFixed(2)}</p>
+            <p className="theme-text-primary font-semibold">RM{item.sellingPrice.toFixed(2)}</p>
           </div>
         </div>
 
@@ -53,7 +53,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, item }) => {
             />
             <button 
               onClick={handleCopy}
-              className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-r-md hover:bg-blue-600 transition-colors"
+              className="px-4 py-2 theme-bg-primary text-white font-semibold rounded-r-md theme-bg-primary-hover transition-colors"
             >
               {copyStatus}
             </button>

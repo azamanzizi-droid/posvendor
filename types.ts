@@ -24,12 +24,13 @@ export interface Sale {
   change?: number;
 }
 
-export type Page = 'jualan' | 'inventori' | 'penyerahan' | 'laporan' | 'tetapan';
-
+// FIX: Add missing VendorSubmission interface.
 export interface VendorSubmission {
   id: string;
-  name: string;
   vendor: string;
+  name: string;
   costPrice: number;
   submittedAt: number;
 }
+
+export type Page = 'jualan' | 'inventori' | 'laporan' | 'tetapan';

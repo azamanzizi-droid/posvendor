@@ -138,7 +138,7 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
                 placeholder="Cari menu..."
                 value={menuSearchQuery}
                 onChange={(e) => setMenuSearchQuery(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
+                className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus\:theme-border-primary dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
             />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -168,7 +168,7 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
                       <p className="text-xs text-slate-600 dark:text-slate-400 truncate">{item.vendor || ' '}&nbsp;</p>
                       <p className="font-semibold text-slate-800 dark:text-slate-100 truncate">{item.name}</p>
                       <div className="flex justify-between items-center mt-1">
-                        <p className="text-blue-500 font-bold">RM{item.sellingPrice.toFixed(2)}</p>
+                        <p className="theme-text-primary font-bold">RM{item.sellingPrice.toFixed(2)}</p>
                         <button
                           onClick={(e) => handleShareClick(item, e)}
                           className="p-1 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
@@ -195,7 +195,7 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
                 Nampaknya tiada apa-apa di sini lagi.
               </p>
               <p className="text-slate-600 dark:text-slate-400 mt-1">
-                Sila ke halaman <strong className="text-blue-500">Inventori</strong> untuk menambah produk anda.
+                Sila ke halaman <strong className="theme-text-primary">Inventori</strong> untuk menambah produk anda.
               </p>
             </div>
           )}
@@ -213,7 +213,7 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
                     placeholder="Cari dalam pesanan..."
                     value={cartSearchQuery}
                     onChange={(e) => setCartSearchQuery(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus\:theme-border-primary dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
                 />
             </div>
         )}
@@ -244,7 +244,7 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
                             type="number"
                             value={item.quantity}
                             onChange={(e) => updateQuantity(item.id, parseInt(e.target.value, 10) || 0)}
-                            className="w-12 text-center bg-transparent font-semibold dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="w-12 text-center bg-transparent font-semibold dark:text-slate-200 focus:outline-none focus:ring-2 focus\:theme-border-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             aria-label={`Kuantiti untuk ${item.name}`}
                         />
                         <button
@@ -273,7 +273,7 @@ const SalesScreen: React.FC<SalesScreenProps> = ({ inventory, setInventory, addS
             <button 
                 onClick={() => setIsCashModalOpen(true)} 
                 disabled={cart.length === 0}
-                className="flex items-center justify-center w-full bg-blue-500 text-white font-semibold py-3 rounded-lg shadow hover:bg-blue-600 transition disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed">
+                className="flex items-center justify-center w-full theme-bg-primary text-white font-semibold py-3 rounded-lg shadow theme-bg-primary-hover transition disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed">
               <CashIcon /> Tunai
             </button>
             <button 

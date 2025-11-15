@@ -19,7 +19,7 @@ const InputField: React.FC<{
       onChange={onChange}
       step={step}
       required={required}
-      className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
+      className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus\:theme-border-primary dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 dark:placeholder-slate-400 transition-colors duration-300"
     />
   </div>
 );
@@ -65,7 +65,7 @@ const VendorEntryScreen = () => {
                             <p className="text-slate-600 dark:text-slate-300 mt-2">Penyerahan anda telah diterima dan akan disemak tidak lama lagi.</p>
                             <button 
                                 onClick={() => setIsSubmitted(false)} 
-                                className="mt-6 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-blue-600 transition"
+                                className="mt-6 px-6 py-2 theme-bg-primary text-white font-semibold rounded-lg shadow theme-bg-primary-hover transition"
                             >
                                 Hantar Lagi
                             </button>
@@ -75,7 +75,7 @@ const VendorEntryScreen = () => {
                             <InputField label="Nama Vendor / Syarikat Anda" type="text" value={vendor} onChange={e => setVendor(e.target.value)} />
                             <InputField label="Nama Menu Baharu" type="text" value={name} onChange={e => setName(e.target.value)} />
                             <InputField label="Harga Kos (RM)" type="number" value={costPrice} onChange={e => setCostPrice(e.target.value)} step="0.01" />
-                            <button type="submit" className="w-full px-4 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition-colors duration-150 text-lg">
+                            <button type="submit" className="w-full px-4 py-3 theme-bg-primary text-white font-bold rounded-lg theme-bg-primary-hover transition-colors duration-150 text-lg">
                                 Hantar Menu
                             </button>
                         </form>

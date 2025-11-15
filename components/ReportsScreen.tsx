@@ -160,7 +160,7 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
   const TabButton: React.FC<{ tabName: string, label: string }> = ({ tabName, label }) => (
       <button 
         onClick={() => setActiveTab(tabName)} 
-        className={`px-4 py-2 font-semibold rounded-md text-sm transition-colors duration-150 ${activeTab === tabName ? 'bg-blue-500 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+        className={`px-4 py-2 font-semibold rounded-md text-sm transition-colors duration-150 ${activeTab === tabName ? 'theme-bg-primary text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
       >
         {label}
       </button>
@@ -187,7 +187,7 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
         <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Aliran Tunai 7 Hari Terakhir</h3>
         <div className="flex justify-end gap-4 text-xs mb-2">
             <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-sm bg-blue-500"></div>
+                <div className="w-3 h-3 rounded-sm theme-bg-primary"></div>
                 <span className="text-slate-600 dark:text-slate-400">Jualan</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -214,7 +214,7 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
                     y={chartHeight - revenueHeight}
                     width={barWidth}
                     height={revenueHeight}
-                    className="fill-current text-blue-500"
+                    className="fill-current theme-text-primary"
                     rx="2"
                   />
                   <rect
@@ -268,13 +268,13 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
               {dailyReport.totalRevenue > 0 ? (
                   <div className="flex flex-col md:flex-row items-center gap-6">
                       <div className="w-32 h-32 rounded-full flex-shrink-0" style={{
-                           background: `conic-gradient(#3b82f6 0% ${tunaiPercentage}%, #94a3b8 ${tunaiPercentage}% 100%)`
+                           background: `conic-gradient(var(--theme-color-500) 0% ${tunaiPercentage}%, #94a3b8 ${tunaiPercentage}% 100%)`
                       }}></div>
                       <div className="w-full flex-grow space-y-3">
                           <div>
                               <div className="flex justify-between items-center">
                                   <div className="flex items-center gap-2">
-                                      <span className="w-4 h-4 rounded bg-blue-500"></span>
+                                      <span className="w-4 h-4 rounded theme-bg-primary"></span>
                                       <span className="font-semibold text-slate-700 dark:text-slate-200">Tunai</span>
                                   </div>
                                   <span className="font-bold text-slate-800 dark:text-slate-100">RM{tunaiAmount.toFixed(2)}</span>
@@ -301,7 +301,7 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
            <div className="bg-white dark:bg-slate-800 rounded-lg shadow mt-4 transition-colors duration-300">
             <div className="flex justify-between items-center p-4 border-b dark:border-slate-700">
               <h3 className="font-bold text-lg dark:text-slate-100">Transaksi Hari Ini</h3>
-              <button onClick={() => setIsTransactionsVisible(!isTransactionsVisible)} className="flex items-center gap-1 text-sm text-blue-500 font-semibold hover:text-blue-700">
+              <button onClick={() => setIsTransactionsVisible(!isTransactionsVisible)} className="flex items-center gap-1 text-sm theme-text-primary font-semibold hover:text-blue-700">
                 {isTransactionsVisible ? 'Sembunyikan' : 'Tunjukkan'}
                 {isTransactionsVisible ? <ChevronUpIcon /> : <ChevronDownIcon />}
               </button>
@@ -387,7 +387,7 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
               <div key={vendor} className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
                 <div className="flex justify-between items-center mb-2">
                   <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100">{vendor}</h4>
-                  <p className="font-bold text-blue-500">Jumlah: RM{totalCost.toFixed(2)}</p>
+                  <p className="font-bold theme-text-primary">Jumlah: RM{totalCost.toFixed(2)}</p>
                 </div>
                 <ul className="text-sm space-y-1 text-slate-600 dark:text-slate-400">
                   {items.map(item => (
@@ -407,7 +407,7 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
         <div>
             <div className="flex justify-between items-center mb-4 print:hidden">
                 <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Laporan Penutupan Hari</h3>
-                <button onClick={() => window.print()} className="flex items-center gap-2 bg-blue-500 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">
+                <button onClick={() => window.print()} className="flex items-center gap-2 theme-bg-primary text-white font-semibold px-4 py-2 rounded-lg shadow theme-bg-primary-hover transition">
                     <PrintIcon /> Cetak Laporan
                 </button>
             </div>
@@ -486,10 +486,10 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
                     <p className="text-sm text-slate-500 dark:text-slate-300 truncate max-w-xs sm:max-w-sm md:max-w-md">{sale.items.map(i => i.name).join(', ')}</p>
                   </div>
                   <div className="text-right flex-shrink-0 ml-4">
-                      <p className="font-bold text-blue-500">RM{sale.total.toFixed(2)}</p>
+                      <p className="font-bold theme-text-primary">RM{sale.total.toFixed(2)}</p>
                       <button 
                         onClick={() => setSelectedSale(sale)}
-                        className="mt-1 text-sm text-blue-500 hover:underline font-semibold"
+                        className="mt-1 text-sm theme-text-primary hover:underline font-semibold"
                       >
                         Lihat Resit
                       </button>

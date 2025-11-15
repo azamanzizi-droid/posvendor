@@ -1,41 +1,29 @@
-
 import React, { useState, useEffect } from 'react';
 import useLocalStorage from './hooks/useLocalStorage';
-import { Page, MenuItem, Sale, VendorSubmission } from './types';
+import { Page, MenuItem, Sale } from './types';
 import Navbar from './components/Navbar';
 import SalesScreen from './components/SalesScreen';
 import InventoryScreen from './components/InventoryScreen';
 import ReportsScreen from './components/ReportsScreen';
 import SettingsScreen from './components/SettingsScreen';
-import VendorEntryScreen from './components/VendorEntryScreen';
-import SubmissionsScreen from './components/SubmissionsScreen';
 
 function App() {
-  const path = window.location.pathname;
-
-  if (path === '/vendor-entry') {
-    return <VendorEntryScreen />;
-  }
-
   const [page, setPage] = useState<Page>('jualan');
   const [inventory, setInventory] = useLocalStorage<MenuItem[]>('inventory', []);
   const [sales, setSales] = useLocalStorage<Sale[]>('sales', []);
-  const [submissions] = useLocalStorage<VendorSubmission[]>('vendorSubmissions', []);
-  const [theme, setTheme] = useLocalStorage<string>('theme', 'light');
+  const [theme, setTheme] = useLocalStorage<string>('theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const [colorTheme, setColorTheme] = useLocalStorage<string>('colorTheme', 'blue');
   const [brandName, setBrandName] = useLocalStorage<string>('brandName', 'Kedai Saya');
 
   useEffect(() => {
     const root = window.document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-      // Proactively correct any invalid theme value found in storage.
-      if (theme !== 'light') {
-        setTheme('light');
-      }
-    }
-  }, [theme, setTheme]);
+    root.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.setAttribute('data-theme-color', colorTheme);
+  }, [colorTheme]);
 
   const toggleTheme = () => {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
@@ -51,12 +39,10 @@ function App() {
         return <SalesScreen inventory={inventory} setInventory={setInventory} addSale={addSale} brandName={brandName} />;
       case 'inventori':
         return <InventoryScreen inventory={inventory} setInventory={setInventory} />;
-      case 'penyerahan':
-        return <SubmissionsScreen setInventory={setInventory} />;
       case 'laporan':
         return <ReportsScreen sales={sales} inventory={inventory} brandName={brandName} />;
       case 'tetapan':
-        return <SettingsScreen sales={sales} setInventory={setInventory} setSales={setSales} theme={theme} toggleTheme={toggleTheme} brandName={brandName} setBrandName={setBrandName} />;
+        return <SettingsScreen sales={sales} setInventory={setInventory} setSales={setSales} theme={theme} toggleTheme={toggleTheme} brandName={brandName} setBrandName={setBrandName} colorTheme={colorTheme} setColorTheme={setColorTheme} />;
       default:
         return <SalesScreen inventory={inventory} setInventory={setInventory} addSale={addSale} brandName={brandName} />;
     }
@@ -66,7 +52,6 @@ function App() {
     switch (page) {
       case 'jualan': return 'Sistem Jualan';
       case 'inventori': return 'Pengurusan Inventori';
-      case 'penyerahan': return 'Penyerahan Vendor';
       case 'laporan': return 'Laporan';
       case 'tetapan': return 'Tetapan';
       default: return 'Sistem POS';
@@ -75,7 +60,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-200 dark:bg-slate-900 font-sans transition-colors duration-300">
-        <header className="bg-slate-800 dark:bg-slate-950 shadow-md sticky top-0 z-30 transition-colors duration-300">
+        <header className="bg-slate-800 dark:bg-slate-950 shadow-md sticky top-0 z-30 transition-colors duration-300 theme-border-primary border-b-2">
             <div className="max-w-4xl mx-auto px-4 py-3">
                 <h1 className="text-xl font-bold text-white">{getPageTitle()}</h1>
             </div>
@@ -83,7 +68,7 @@ function App() {
         <main className="max-w-4xl mx-auto p-4 pb-24">
             {renderPage()}
         </main>
-        <Navbar activePage={page} setPage={setPage} submissionCount={submissions.length} />
+        <Navbar activePage={page} setPage={setPage} />
     </div>
   );
 }

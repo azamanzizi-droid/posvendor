@@ -1,12 +1,10 @@
-
 import React from 'react';
 import { Page } from '../types';
-import { PosIcon, InventoryIcon, ReportIcon, SettingsIcon, InboxIcon } from './Icons';
+import { PosIcon, InventoryIcon, ReportIcon, SettingsIcon } from './Icons';
 
 interface NavbarProps {
   activePage: Page;
   setPage: (page: Page) => void;
-  submissionCount: number;
 }
 
 const NavButton: React.FC<{
@@ -16,7 +14,7 @@ const NavButton: React.FC<{
   onClick: () => void;
   badgeCount?: number;
 }> = ({ label, icon, isActive, onClick, badgeCount }) => {
-  const activeClasses = 'text-white';
+  const activeClasses = 'theme-text-primary';
   const inactiveClasses = 'text-slate-400 dark:text-slate-500 hover:text-white dark:hover:text-slate-300';
 
   return (
@@ -38,7 +36,7 @@ const NavButton: React.FC<{
 };
 
 
-const Navbar: React.FC<NavbarProps> = ({ activePage, setPage, submissionCount }) => {
+const Navbar: React.FC<NavbarProps> = ({ activePage, setPage }) => {
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-slate-800 dark:bg-slate-950 border-t border-slate-700 dark:border-slate-800 h-16 z-40 transition-colors duration-300">
       <div className="flex justify-around items-center h-full max-w-lg mx-auto">
@@ -53,13 +51,6 @@ const Navbar: React.FC<NavbarProps> = ({ activePage, setPage, submissionCount })
           icon={<InventoryIcon />}
           isActive={activePage === 'inventori'}
           onClick={() => setPage('inventori')}
-        />
-        <NavButton
-          label="Penyerahan"
-          icon={<InboxIcon />}
-          isActive={activePage === 'penyerahan'}
-          onClick={() => setPage('penyerahan')}
-          badgeCount={submissionCount}
         />
         <NavButton
           label="Laporan"

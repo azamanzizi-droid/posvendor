@@ -79,7 +79,7 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
           <button 
             onClick={handleCapture}
             disabled={!!error || !stream}
-            className="w-16 h-16 bg-white rounded-full border-4 border-slate-400 disabled:opacity-50 ring-2 ring-offset-2 ring-offset-slate-800 ring-transparent focus:ring-blue-500 transition"
+            className="w-16 h-16 bg-white rounded-full border-4 border-slate-400 disabled:opacity-50 ring-2 ring-offset-2 ring-offset-slate-800 ring-transparent focus:outline-none focus\:theme-ring-primary transition"
             aria-label="Ambil gambar"
           />
         </div>
