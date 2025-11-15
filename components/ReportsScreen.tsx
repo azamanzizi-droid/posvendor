@@ -114,6 +114,36 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
     })).sort((a, b) => b.totalCost - a.totalCost);
   }, [todaySales, inventory]);
 
+  const cashFlowData = useMemo(() => {
+    const data: { [key: string]: { date: Date; revenue: number; profit: number } } = {};
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      const dateString = date.toISOString().split('T')[0];
+      data[dateString] = { date: date, revenue: 0, profit: 0 };
+    }
+    
+    sales.forEach(sale => {
+      const saleDate = new Date(sale.timestamp);
+      const sevenDaysAgo = new Date(today);
+      sevenDaysAgo.setDate(today.getDate() - 7);
+      sevenDaysAgo.setHours(0, 0, 0, 0);
+
+      if (saleDate >= sevenDaysAgo) {
+        const dateString = saleDate.toISOString().split('T')[0];
+        if (data[dateString]) {
+          data[dateString].revenue += sale.total;
+          data[dateString].profit += sale.profit;
+        }
+      }
+    });
+
+    return Object.values(data).sort((a, b) => a.date.getTime() - b.date.getTime());
+  }, [sales]);
+
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) {
         return [];
@@ -141,12 +171,84 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
   const tunaiPercentage = dailyReport.totalRevenue > 0 ? (tunaiAmount / dailyReport.totalRevenue) * 100 : 0;
   const ewalletPercentage = dailyReport.totalRevenue > 0 ? (ewalletAmount / dailyReport.totalRevenue) * 100 : 0;
 
+  const CashFlowChart: React.FC<{ data: typeof cashFlowData }> = ({ data }) => {
+    const chartHeight = 250;
+    const chartWidth = 500;
+    const maxValue = Math.max(...data.map(d => d.revenue), 10);
+    const barWidth = chartWidth / data.length / 2.5;
+
+    const yAxisLabels = [0, maxValue / 2, maxValue].map(val => ({
+      value: `RM${Math.round(val)}`,
+      y: chartHeight - (val / maxValue) * chartHeight
+    }));
+
+    return (
+      <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow transition-colors duration-300">
+        <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Aliran Tunai 7 Hari Terakhir</h3>
+        <div className="flex justify-end gap-4 text-xs mb-2">
+            <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-sm bg-blue-500"></div>
+                <span className="text-slate-600 dark:text-slate-400">Jualan</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-sm bg-green-500"></div>
+                <span className="text-slate-600 dark:text-slate-400">Untung</span>
+            </div>
+        </div>
+        <div className="w-full overflow-x-auto">
+          <svg viewBox={`-40 0 ${chartWidth + 50} ${chartHeight + 30}`} className="min-w-[500px]">
+            {yAxisLabels.map(label => (
+              <text key={label.value} x="-10" y={label.y + 4} textAnchor="end" className="text-xs fill-current text-slate-500 dark:text-slate-400">
+                {label.value}
+              </text>
+            ))}
+            {data.map((day, index) => {
+              const revenueHeight = (day.revenue / maxValue) * chartHeight;
+              const profitHeight = (day.profit / maxValue) * chartHeight;
+              const xPos = (index * (chartWidth / data.length)) + (chartWidth / data.length / 2);
+
+              return (
+                <g key={day.date.toISOString()}>
+                  <rect
+                    x={xPos - barWidth}
+                    y={chartHeight - revenueHeight}
+                    width={barWidth}
+                    height={revenueHeight}
+                    className="fill-current text-blue-500"
+                    rx="2"
+                  />
+                  <rect
+                    x={xPos}
+                    y={chartHeight - profitHeight}
+                    width={barWidth}
+                    height={profitHeight}
+                    className="fill-current text-green-500"
+                    rx="2"
+                  />
+                  <text
+                    x={xPos - barWidth/2}
+                    y={chartHeight + 15}
+                    textAnchor="middle"
+                    className="text-xs fill-current text-slate-600 dark:text-slate-300"
+                  >
+                    {day.date.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' })}
+                  </text>
+                </g>
+              );
+            })}
+            <line x1="0" y1={chartHeight} x2={chartWidth} y2={chartHeight} className="stroke-current text-slate-300 dark:text-slate-600" />
+          </svg>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div>
       <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-4">Laporan</h2>
       <div className="flex space-x-2 border-b dark:border-slate-700 mb-4 overflow-x-auto pb-2">
           <TabButton tabName="dailySales" label="Jualan Harian" />
+          <TabButton tabName="cashFlow" label="Aliran Tunai" />
           <TabButton tabName="stockBalance" label="Baki Stok" />
           <TabButton tabName="vendorSales" label="Jualan Vendor" />
           <TabButton tabName="dayClosing" label="Penutupan Hari" />
@@ -230,6 +332,12 @@ const ReportsScreen: React.FC<ReportsScreenProps> = ({ sales, inventory, brandNa
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {activeTab === 'cashFlow' && (
+        <div className="space-y-4">
+          <CashFlowChart data={cashFlowData} />
         </div>
       )}
 
