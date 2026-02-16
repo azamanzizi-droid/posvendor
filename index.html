@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#1e293b" />
     <title>Sistem POS Vendor</title>
     <script src="https://cdn.tailwindcss.com"></script>
   <script type="importmap">
@@ -56,6 +57,11 @@
   .dark ::-webkit-scrollbar-thumb:hover {
     background: #64748b; /* slate-500 */
   }
+
+  /* Safe Area Utilities */
+  .safe-pt { padding-top: env(safe-area-inset-top, 0px); }
+  .safe-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .safe-h-nav { height: calc(4rem + env(safe-area-inset-bottom, 0px)); }
 
   /* Color Theme Styles */
   :root {

@@ -18,6 +18,12 @@ function App() {
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.toggle('dark', theme === 'dark');
+    
+    // Update Android status bar color based on dark mode
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', theme === 'dark' ? '#020617' : '#1e293b');
+    }
   }, [theme]);
 
   useEffect(() => {
@@ -59,13 +65,13 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-200 dark:bg-slate-900 font-sans transition-colors duration-300">
-        <header className="bg-slate-800 dark:bg-slate-950 shadow-md sticky top-0 z-30 transition-colors duration-300 theme-border-primary border-b-2">
+    <div className="min-h-[100dvh] bg-slate-200 dark:bg-slate-900 font-sans transition-colors duration-300">
+        <header className="bg-slate-800 dark:bg-slate-950 shadow-md sticky top-0 z-30 transition-colors duration-300 theme-border-primary border-b-2 safe-pt">
             <div className="max-w-4xl mx-auto px-4 py-3">
                 <h1 className="text-xl font-bold text-white">{getPageTitle()}</h1>
             </div>
         </header>
-        <main className="max-w-4xl mx-auto p-4 pb-24">
+        <main className="max-w-4xl mx-auto p-4 pb-32">
             {renderPage()}
         </main>
         <Navbar activePage={page} setPage={setPage} />
